@@ -1,0 +1,817 @@
+<title>Generalized Delannoy Grids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #f5f6f1;
+    --paper-alt: #ffffff;
+    --paper-sunk: #eceee7;
+    --ink: #1c232a;
+    --ink-soft: #59636e;
+    --ink-faint: #8a939c;
+    --line: #d9dcd2;
+    --line-strong: #c3c8bb;
+    --accent: #0e6e78;
+    --accent-soft: #0e6e7818;
+    --accent-ink: #ffffff;
+    --accent2: #b9791f;
+    --accent2-soft: #b9791f1c;
+    --danger: #b3372c;
+    --shadow: 0 1px 2px rgba(20,25,20,0.06), 0 8px 24px -12px rgba(20,25,20,0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #121820;
+      --paper-alt: #182029;
+      --paper-sunk: #0d1218;
+      --ink: #e8ecec;
+      --ink-soft: #a1acb2;
+      --ink-faint: #6d7982;
+      --line: #2a343d;
+      --line-strong: #3a4650;
+      --accent: #3fb8c4;
+      --accent-soft: #3fb8c422;
+      --accent-ink: #0a1418;
+      --accent2: #e5a54e;
+      --accent2-soft: #e5a54e22;
+      --danger: #e2685a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #121820;
+    --paper-alt: #182029;
+    --paper-sunk: #0d1218;
+    --ink: #e8ecec;
+    --ink-soft: #a1acb2;
+    --ink-faint: #6d7982;
+    --line: #2a343d;
+    --line-strong: #3a4650;
+    --accent: #3fb8c4;
+    --accent-soft: #3fb8c422;
+    --accent-ink: #0a1418;
+    --accent2: #e5a54e;
+    --accent2-soft: #e5a54e22;
+    --danger: #e2685a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px -12px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  .wrap {
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 28px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  header.top {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: none;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 16px;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  h1 {
+    font-family: "Literata", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(26px, 3.4vw, 36px);
+    margin: 2px 0 4px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 62ch;
+    line-height: 1.5;
+  }
+
+  .layout {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 26px;
+  }
+  @media (max-width: 880px) {
+    body { overflow: auto; }
+    .wrap { height: auto; min-height: 100%; }
+    .layout { grid-template-columns: 1fr; height: auto; }
+    .panel { height: auto; max-height: none; }
+    .stage { height: auto; }
+    .grid-scroll { flex: none; max-height: 60vh; }
+  }
+
+  /* ---- control panel ---- */
+  .panel {
+    background: var(--paper-alt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-shadow: var(--shadow);
+  }
+  .panel h2 {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0;
+    font-weight: 600;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .field label .hint {
+    font-weight: 400;
+    color: var(--ink-faint);
+    font-size: 11.5px;
+    font-family: "IBM Plex Mono", monospace;
+  }
+  input[type="number"], input[type="text"] {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    width: 100%;
+  }
+  input[type="number"]:focus, input[type="text"]:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle-row input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+
+  .sub-fields {
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-left: 2px solid var(--line);
+    margin-left: 6px;
+  }
+  .sub-fields[data-disabled="true"] { opacity: 0.4; pointer-events: none; }
+
+  button {
+    font-family: "Public Sans", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    padding: 11px 16px;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease, border-color .15s ease;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-ghost {
+    background: transparent;
+    border-color: var(--line-strong);
+    color: var(--ink);
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .error-msg {
+    font-size: 12.5px;
+    color: var(--danger);
+    font-family: "IBM Plex Mono", monospace;
+    min-height: 1.2em;
+  }
+
+  .formula-card {
+    background: var(--paper-sunk);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 15px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.8px;
+    line-height: 1.9;
+    color: var(--ink-soft);
+  }
+  .formula-card .line { color: var(--ink); }
+  .formula-card b { color: var(--accent); font-weight: 600; }
+  .kbadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent2-soft);
+    color: var(--accent2);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-weight: 600;
+  }
+
+  /* ---- grid area ---- */
+  .stage {
+    background: var(--paper-alt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .stage-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  .stage-title {
+    font-family: "Literata", serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .stage-meta {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 18px 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    flex: none;
+  }
+  .legend .sw {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend .dot {
+    width: 11px; height: 11px; border-radius: 3px;
+    border: 1px solid var(--line-strong);
+    flex: none;
+  }
+
+  .grid-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0 0 4px;
+  }
+  table.dgrid {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  table.dgrid th, table.dgrid td {
+    padding: 7px 10px;
+    text-align: right;
+    white-space: nowrap;
+    font-size: 12.5px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  table.dgrid thead th {
+    position: sticky;
+    top: 0;
+    background: var(--paper-sunk);
+    color: var(--ink-faint);
+    font-weight: 600;
+    z-index: 2;
+    text-align: center;
+  }
+  table.dgrid thead th.corner {
+    left: 0;
+    z-index: 3;
+    text-align: left;
+    color: var(--accent2);
+  }
+  table.dgrid tbody th {
+    position: sticky;
+    left: 0;
+    background: var(--paper-sunk);
+    color: var(--ink-faint);
+    font-weight: 600;
+    text-align: left;
+    z-index: 1;
+  }
+  table.dgrid td.edge {
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--accent-soft);
+  }
+  table.dgrid td span.exp { font-size: 0.78em; vertical-align: 0.5em; color: var(--ink-faint); }
+  table.dgrid td { cursor: default; }
+  table.dgrid td:hover { outline: 1.5px solid var(--accent); outline-offset: -1.5px; }
+
+  .empty-state {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 14px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translate(-50%, 12px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .copy-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 12, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+    padding: 24px;
+  }
+  .copy-overlay.show { display: flex; }
+  .copy-box {
+    background: var(--paper-alt);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .copy-box h3 {
+    margin: 0;
+    font-family: "Literata", serif;
+    font-size: 17px;
+  }
+  .copy-box p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .copy-box kbd {
+    font-family: "IBM Plex Mono", monospace;
+    background: var(--paper-sunk);
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 11.5px;
+  }
+  .copy-box textarea {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    padding: 10px;
+    border-radius: 7px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 90px;
+    max-height: 40vh;
+  }
+  .copy-box button { align-self: flex-end; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Combinatorics · grid generator</div>
+    <h1>Generalized Delannoy Grids</h1>
+    <p class="sub">Builds the D<sup>k</sup>(m, n) table from Edwards &amp; Griffiths, <em>Delannoy Constructions</em>: the top row is always 1, the left column is C(m+k, k), and every interior cell is the sum of the cell above, above-left, and left of it. Set k, choose the grid's row and column count, and optionally reduce every entry modulo μ.</p>
+  </header>
+
+  <div class="layout">
+    <div class="panel" id="panel">
+      <div>
+        <h2>Parameters</h2>
+      </div>
+
+      <div class="field">
+        <label>Generalization index k <span class="hint">k = 0 is the classic Delannoy table</span></label>
+        <input type="number" id="k" value="0" min="0" max="60" step="1">
+      </div>
+
+      <div class="field">
+        <label>Grid size <span class="hint">rows (m) × columns (n)</span></label>
+        <div class="row2">
+          <input type="number" id="height" value="10" min="1" max="250" step="1" aria-label="rows (m)">
+          <input type="number" id="width" value="10" min="1" max="250" step="1" aria-label="columns (n)">
+        </div>
+        <span class="hint">up to 250 × 250 — large exact grids take a moment; a modulus stays fast at any size</span>
+      </div>
+
+      <div>
+        <label class="toggle-row">
+          <input type="checkbox" id="modOn">
+          Apply modulus
+        </label>
+        <div class="sub-fields" id="modFields" data-disabled="true" style="margin-top:10px;">
+          <div class="field">
+            <label>μ <span class="hint">every entry mod μ</span></label>
+            <input type="number" id="mod" value="7" min="2" max="100000" step="1">
+          </div>
+          <label class="toggle-row">
+            <input type="checkbox" id="colorOn" checked>
+            Color cells by residue
+          </label>
+        </div>
+      </div>
+
+      <label class="toggle-row">
+        <input type="checkbox" id="compactOn">
+        Abbreviate long numbers <span class="hint" style="margin-left:auto;">hover for exact value</span>
+      </label>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <button class="btn-primary" id="genBtn">Generate grid</button>
+
+      <div class="btn-row">
+        <button class="btn-ghost" id="copyLinkBtn">Copy link to this grid</button>
+        <button class="btn-ghost" id="copyTsvBtn">Copy as TSV</button>
+      </div>
+
+      <div class="formula-card" id="formulaCard"></div>
+
+      <p style="font-size:11.5px; color:var(--ink-faint); line-height:1.6; margin:0;">
+        Exact values use arbitrary-precision integers; a modulus reduces every entry, including intermediate sums, at each step, so it stays exact and fast at any grid size. The page URL updates with your settings — copy it directly, or use "Copy link to this grid", to share an exact configuration.<br><br>
+        Steven Edwards &amp; William Griffiths, <em>Delannoy Constructions</em>, J. Integer Sequences 27 (2024), Article 24.1.8.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="stage-head">
+        <div class="stage-title">D<sup id="titleK">0</sup>(m, n)</div>
+        <div class="stage-meta" id="stageMeta"></div>
+      </div>
+      <div class="legend" id="legend" style="display:none;"></div>
+      <div class="grid-scroll" id="gridScroll">
+        <div class="empty-state">Set your parameters and click <strong>Generate grid</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="copy-overlay" id="copyOverlay">
+  <div class="copy-box">
+    <h3 id="copyOverlayTitle">Copy this</h3>
+    <p>Your browser didn't allow an automatic copy here. The text below is pre-selected — press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd> to copy it.</p>
+    <textarea id="copyOverlayText" readonly></textarea>
+    <button class="btn-primary" id="copyOverlayClose">Done</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var kEl = $('k'), wEl = $('width'), hEl = $('height');
+  var modOnEl = $('modOn'), modEl = $('mod'), colorOnEl = $('colorOn'), compactEl = $('compactOn');
+  var modFields = $('modFields');
+  var errorMsg = $('errorMsg');
+  var gridScroll = $('gridScroll');
+  var legend = $('legend');
+  var stageMeta = $('stageMeta');
+  var titleK = $('titleK');
+  var formulaCard = $('formulaCard');
+  var toast = $('toast');
+
+  function binom(n, k) {
+    if (k < 0n) return 0n;
+    if (k === 0n || k === n) return 1n;
+    if (k > n - k) k = n - k;
+    var result = 1n;
+    for (var i = 0n; i < k; i++) {
+      result = (result * (n - i)) / (i + 1n);
+    }
+    return result;
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+  }
+
+  var copyOverlay = $('copyOverlay'), copyOverlayTitle = $('copyOverlayTitle'), copyOverlayText = $('copyOverlayText');
+  $('copyOverlayClose').addEventListener('click', function () {
+    copyOverlay.classList.remove('show');
+  });
+
+  function showCopyFallback(text, title) {
+    copyOverlayTitle.textContent = title;
+    copyOverlayText.value = text;
+    copyOverlay.classList.add('show');
+    copyOverlayText.focus();
+    copyOverlayText.select();
+  }
+
+  function copyText(text, opts) {
+    opts = opts || {};
+    var successMsg = opts.successMsg || 'Copied';
+    var title = opts.title || 'Copy this';
+
+    function legacyFallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) {
+        showToast(successMsg);
+      } else {
+        showCopyFallback(text, title);
+      }
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showToast(successMsg);
+      }).catch(legacyFallback);
+    } else {
+      legacyFallback();
+    }
+  }
+
+  function fmt(v, compact) {
+    var s = v.toString();
+    var neg = s[0] === '-';
+    var digits = neg ? s.slice(1) : s;
+    if (!compact || digits.length <= 7) {
+      return { html: s, title: s };
+    }
+    var exp = digits.length - 1;
+    var mantissa = digits[0] + '.' + digits.slice(1, 4);
+    return { html: (neg ? '&minus;' : '') + mantissa + '&times;10<span class="exp">' + exp + '</span>', title: s };
+  }
+
+  function hueFor(residue, m) {
+    return Math.round((residue * 360) / m) % 360;
+  }
+
+  function readState() {
+    var k = parseInt(kEl.value, 10);
+    var w = parseInt(wEl.value, 10);
+    var h = parseInt(hEl.value, 10);
+    var modOn = modOnEl.checked;
+    var mod = parseInt(modEl.value, 10);
+    var colorOn = colorOnEl.checked;
+    var compact = compactEl.checked;
+
+    if (!Number.isFinite(k) || k < 0 || k > 60) return { error: 'k must be an integer between 0 and 60.' };
+    if (!Number.isFinite(w) || w < 1 || w > 250) return { error: 'Columns (n) must be an integer between 1 and 250.' };
+    if (!Number.isFinite(h) || h < 1 || h > 250) return { error: 'Rows (m) must be an integer between 1 and 250.' };
+    if (modOn) {
+      if (!Number.isFinite(mod) || mod < 2 || mod > 100000) return { error: 'Modulus must be an integer between 2 and 100000.' };
+    }
+    return { k: k, w: w, h: h, modOn: modOn, mod: mod, colorOn: colorOn, compact: compact };
+  }
+
+  function computeGrid(state) {
+    var k = BigInt(state.k);
+    var w = state.w, h = state.h;
+    var useMod = state.modOn;
+    var m = useMod ? BigInt(state.mod) : null;
+
+    var grid = new Array(h + 1);
+    for (var i = 0; i <= h; i++) grid[i] = new Array(w + 1);
+
+    for (var j = 0; j <= w; j++) {
+      grid[0][j] = useMod ? (1n % m) : 1n;
+    }
+    for (i = 1; i <= h; i++) {
+      var v = binom(k + BigInt(i), k);
+      grid[i][0] = useMod ? (v % m) : v;
+    }
+    for (i = 1; i <= h; i++) {
+      for (j = 1; j <= w; j++) {
+        var sum = grid[i - 1][j] + grid[i - 1][j - 1] + grid[i][j - 1];
+        grid[i][j] = useMod ? (sum % m) : sum;
+      }
+    }
+    return grid;
+  }
+
+  function render(state, grid) {
+    titleK.textContent = state.k;
+    stageMeta.textContent = 'm = 0..' + state.h + ' (rows) · n = 0..' + state.w + ' (columns)' + (state.modOn ? ' · mod ' + state.mod : ' · exact');
+
+    formulaCard.innerHTML =
+      '<div class="line">D<span class="kbadge">' + state.k + '</span>(m, 0) = C(m+' + state.k + ', ' + state.k + ')</div>' +
+      '<div class="line">D<span class="kbadge">' + state.k + '</span>(0, n) = 1</div>' +
+      '<div class="line">D<span class="kbadge">' + state.k + '</span>(m, n) = <b>↑</b> + <b>↖</b> + <b>←</b></div>' +
+      (state.modOn ? '<div style="margin-top:6px;">reduced mod ' + state.mod + ' at every step</div>' : '');
+
+    if (state.modOn && state.colorOn) {
+      legend.style.display = 'flex';
+      var m = state.mod;
+      var steps = Math.min(m, 12);
+      var html = '<span style="color:var(--ink-faint);">residue mod ' + m + ':</span>';
+      for (var s = 0; s < steps; s++) {
+        var r = Math.floor((s * m) / steps);
+        html += '<span class="sw"><span class="dot" style="background:hsl(' + hueFor(r, m) + ',62%,55%);"></span>' + r + '</span>';
+      }
+      if (steps < m) html += '<span class="sw">…</span>';
+      legend.innerHTML = html;
+    } else {
+      legend.style.display = 'none';
+      legend.innerHTML = '';
+    }
+
+    var w = state.w, h = state.h;
+    var out = ['<table class="dgrid"><thead><tr><th class="corner">m \\ n</th>'];
+    for (var j = 0; j <= w; j++) out.push('<th>' + j + '</th>');
+    out.push('</tr></thead><tbody>');
+
+    for (var i = 0; i <= h; i++) {
+      out.push('<tr><th>' + i + '</th>');
+      for (j = 0; j <= w; j++) {
+        var val = grid[i][j];
+        var f = fmt(val, state.compact);
+        var cls = (i === 0 || j === 0) ? ' class="edge"' : '';
+        var style = '';
+        if (state.modOn && state.colorOn) {
+          var residue = Number(val);
+          var hue = hueFor(residue, state.mod);
+          style = ' style="background:hsla(' + hue + ',62%,55%,0.22);"';
+        }
+        out.push('<td' + cls + style + ' title="' + f.title + '">' + f.html + '</td>');
+      }
+      out.push('</tr>');
+    }
+    out.push('</tbody></table>');
+    gridScroll.innerHTML = out.join('');
+  }
+
+  function stateToHash(state) {
+    var parts = ['k=' + state.k, 'w=' + state.w, 'h=' + state.h];
+    if (state.modOn) {
+      parts.push('mod=' + state.mod);
+      parts.push('color=' + (state.colorOn ? 1 : 0));
+    }
+    if (state.compact) parts.push('compact=1');
+    return '#' + parts.join('&');
+  }
+
+  function hashToFields() {
+    var hash = location.hash.replace(/^#/, '');
+    if (!hash) return false;
+    var params = {};
+    hash.split('&').forEach(function (p) {
+      var kv = p.split('=');
+      if (kv.length === 2) params[kv[0]] = kv[1];
+    });
+    if (params.k !== undefined) kEl.value = params.k;
+    if (params.w !== undefined) wEl.value = params.w;
+    if (params.h !== undefined) hEl.value = params.h;
+    if (params.mod !== undefined) {
+      modOnEl.checked = true;
+      modEl.value = params.mod;
+    }
+    if (params.color !== undefined) colorOnEl.checked = params.color === '1';
+    if (params.compact !== undefined) compactEl.checked = params.compact === '1';
+    return true;
+  }
+
+  function generate() {
+    var state = readState();
+    if (state.error) {
+      errorMsg.textContent = state.error;
+      return;
+    }
+    errorMsg.textContent = '';
+    var grid = computeGrid(state);
+    render(state, grid);
+    history.replaceState(null, '', stateToHash(state));
+  }
+
+  function syncModFields() {
+    modFields.setAttribute('data-disabled', modOnEl.checked ? 'false' : 'true');
+  }
+
+  modOnEl.addEventListener('change', syncModFields);
+  $('genBtn').addEventListener('click', generate);
+
+  $('copyLinkBtn').addEventListener('click', function () {
+    var state = readState();
+    if (state.error) { errorMsg.textContent = state.error; return; }
+    var url = location.origin + location.pathname + stateToHash(state);
+    copyText(url, { successMsg: 'Link copied', title: 'Link to this grid' });
+  });
+
+  $('copyTsvBtn').addEventListener('click', function () {
+    var state = readState();
+    if (state.error) { errorMsg.textContent = state.error; return; }
+    var grid = computeGrid(state);
+    var lines = [];
+    var header = ['m\\n'];
+    for (var j = 0; j <= state.w; j++) header.push(j);
+    lines.push(header.join('\t'));
+    for (var i = 0; i <= state.h; i++) {
+      var row = [i];
+      for (j = 0; j <= state.w; j++) row.push(grid[i][j].toString());
+      lines.push(row.join('\t'));
+    }
+    copyText(lines.join('\n'), { successMsg: 'Grid copied as TSV — paste into a spreadsheet', title: 'Grid as TSV' });
+  });
+
+  [kEl, wEl, hEl, modEl].forEach(function (el) {
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') generate();
+    });
+  });
+
+  syncModFields();
+  if (hashToFields()) {
+    syncModFields();
+    generate();
+  } else {
+    generate();
+  }
+})();
+</script>
