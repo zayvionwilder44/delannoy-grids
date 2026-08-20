@@ -71,10 +71,10 @@
   }
 
   .wrap {
-    max-width: 1280px;
+    max-width: 1360px;
     height: 100%;
     margin: 0 auto;
-    padding: 28px 28px 20px;
+    padding: 26px 28px 18px;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -85,9 +85,9 @@
     flex-direction: column;
     gap: 6px;
     flex: none;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     border-bottom: 1px solid var(--line);
-    padding-bottom: 16px;
+    padding-bottom: 14px;
   }
   .eyebrow {
     font-family: "IBM Plex Mono", monospace;
@@ -100,15 +100,15 @@
   h1 {
     font-family: "Literata", Georgia, serif;
     font-weight: 600;
-    font-size: clamp(26px, 3.4vw, 36px);
+    font-size: clamp(24px, 3vw, 33px);
     margin: 2px 0 4px;
     text-wrap: balance;
     letter-spacing: -0.01em;
   }
   .sub {
     color: var(--ink-soft);
-    font-size: 15px;
-    max-width: 62ch;
+    font-size: 14.5px;
+    max-width: 68ch;
     line-height: 1.5;
   }
 
@@ -117,7 +117,7 @@
     min-height: 0;
     display: grid;
     grid-template-columns: 300px 1fr;
-    gap: 26px;
+    gap: 22px;
   }
   @media (max-width: 880px) {
     body { overflow: auto; }
@@ -133,12 +133,12 @@
     background: var(--paper-alt);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: 20px;
+    padding: 18px;
     height: 100%;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
     box-shadow: var(--shadow);
   }
   .panel h2 {
@@ -150,6 +150,7 @@
     margin: 0;
     font-weight: 600;
   }
+  .divider { border: none; border-top: 1px solid var(--line); margin: 2px 0; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field label {
     font-size: 13px;
@@ -166,10 +167,10 @@
     font-size: 11.5px;
     font-family: "IBM Plex Mono", monospace;
   }
-  input[type="number"], input[type="text"] {
+  input[type="number"], input[type="text"], textarea, select {
     font-family: "IBM Plex Mono", monospace;
     font-variant-numeric: tabular-nums;
-    font-size: 14px;
+    font-size: 13.5px;
     padding: 9px 10px;
     border-radius: 7px;
     border: 1px solid var(--line-strong);
@@ -177,7 +178,8 @@
     color: var(--ink);
     width: 100%;
   }
-  input[type="number"]:focus, input[type="text"]:focus {
+  textarea { resize: vertical; min-height: 56px; line-height: 1.5; }
+  input:focus, textarea:focus, select:focus {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
     border-color: var(--accent);
@@ -194,7 +196,7 @@
     cursor: pointer;
     user-select: none;
   }
-  .toggle-row input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+  .toggle-row input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; flex: none; }
 
   .sub-fields {
     padding-left: 24px;
@@ -209,27 +211,25 @@
   button {
     font-family: "Public Sans", sans-serif;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13.5px;
     border-radius: 7px;
     border: 1px solid transparent;
-    padding: 11px 16px;
+    padding: 10px 14px;
     cursor: pointer;
-    transition: transform 0.08s ease, background 0.15s ease, border-color .15s ease;
+    transition: transform 0.08s ease, background 0.15s ease, border-color .15s ease, opacity .15s ease;
   }
   button:active { transform: translateY(1px); }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--accent-ink);
-  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
   .btn-primary:hover { filter: brightness(1.06); }
   .btn-ghost {
     background: transparent;
     border-color: var(--line-strong);
     color: var(--ink);
-    font-size: 13px;
-    padding: 9px 12px;
+    font-size: 12.5px;
+    padding: 8px 12px;
   }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost[disabled] { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .error-msg {
@@ -237,16 +237,17 @@
     color: var(--danger);
     font-family: "IBM Plex Mono", monospace;
     min-height: 1.2em;
+    white-space: pre-wrap;
   }
 
   .formula-card {
     background: var(--paper-sunk);
     border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 14px 15px;
+    padding: 13px 14px;
     font-family: "IBM Plex Mono", monospace;
-    font-size: 12.8px;
-    line-height: 1.9;
+    font-size: 12.5px;
+    line-height: 1.85;
     color: var(--ink-soft);
   }
   .formula-card .line { color: var(--ink); }
@@ -260,6 +261,13 @@
     border-radius: 5px;
     padding: 1px 6px;
     font-weight: 600;
+  }
+
+  .footnote {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+    margin: 0;
   }
 
   /* ---- grid area ---- */
@@ -280,36 +288,50 @@
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
-    padding: 16px 18px;
+    padding: 14px 18px;
     border-bottom: 1px solid var(--line);
     flex: none;
   }
   .stage-title {
     font-family: "Literata", serif;
-    font-size: 17px;
+    font-size: 16.5px;
     font-weight: 600;
   }
   .stage-meta {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--ink-faint);
+    line-height: 1.6;
+    text-align: right;
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+    background: var(--paper-sunk);
+  }
+  .toolbar .sep {
+    width: 1px;
+    align-self: stretch;
+    background: var(--line-strong);
+    margin: 0 3px;
   }
   .legend {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    padding: 0 18px 14px;
+    padding: 10px 18px 0;
     font-family: "IBM Plex Mono", monospace;
     font-size: 11.5px;
     color: var(--ink-soft);
     flex: none;
   }
-  .legend .sw {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
+  .legend .sw { display: inline-flex; align-items: center; gap: 5px; }
   .legend .dot {
     width: 11px; height: 11px; border-radius: 3px;
     border: 1px solid var(--line-strong);
@@ -320,7 +342,7 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 0 0 4px;
+    padding: 10px 0 4px;
   }
   table.dgrid {
     border-collapse: separate;
@@ -360,21 +382,11 @@
     text-align: left;
     z-index: 1;
   }
-  table.dgrid td.edge {
-    color: var(--accent);
-    font-weight: 600;
-    background: var(--accent-soft);
-  }
+  table.dgrid td.edge { color: var(--accent); font-weight: 600; background: var(--accent-soft); }
   table.dgrid td span.exp { font-size: 0.78em; vertical-align: 0.5em; color: var(--ink-faint); }
-  table.dgrid td { cursor: default; }
   table.dgrid td:hover { outline: 1.5px solid var(--accent); outline-offset: -1.5px; }
 
-  .empty-state {
-    padding: 60px 24px;
-    text-align: center;
-    color: var(--ink-faint);
-    font-size: 14px;
-  }
+  .empty-state { padding: 60px 24px; text-align: center; color: var(--ink-faint); font-size: 14px; }
 
   .toast {
     position: fixed;
@@ -391,10 +403,11 @@
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 20;
+    max-width: 80vw;
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-  .copy-overlay {
+  .overlay {
     display: none;
     position: fixed;
     inset: 0;
@@ -404,8 +417,8 @@
     z-index: 30;
     padding: 24px;
   }
-  .copy-overlay.show { display: flex; }
-  .copy-box {
+  .overlay.show { display: flex; }
+  .box {
     background: var(--paper-alt);
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -413,22 +426,16 @@
     padding: 20px;
     width: 100%;
     max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-  .copy-box h3 {
-    margin: 0;
-    font-family: "Literata", serif;
-    font-size: 17px;
-  }
-  .copy-box p {
-    margin: 0;
-    font-size: 13px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-  }
-  .copy-box kbd {
+  .box.wide { max-width: 760px; }
+  .box h3 { margin: 0; font-family: "Literata", serif; font-size: 17px; }
+  .box > p { margin: 0; font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .box kbd {
     font-family: "IBM Plex Mono", monospace;
     background: var(--paper-sunk);
     border: 1px solid var(--line-strong);
@@ -436,37 +443,64 @@
     padding: 1px 5px;
     font-size: 11.5px;
   }
-  .copy-box textarea {
+  .box textarea.mono-out {
     font-family: "IBM Plex Mono", monospace;
     font-size: 12.5px;
-    padding: 10px;
-    border-radius: 7px;
-    border: 1px solid var(--line-strong);
-    background: var(--paper);
-    color: var(--ink);
-    resize: vertical;
     min-height: 90px;
     max-height: 40vh;
   }
-  .copy-box button { align-self: flex-end; }
+  .box .box-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .box .box-close {
+    position: sticky;
+    top: 0;
+    align-self: flex-end;
+  }
+  .modal-result { border-top: 1px dashed var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .modal-result .grid-scroll { max-height: 44vh; overflow: auto; border: 1px solid var(--line); border-radius: 8px; flex: none; padding: 4px 0; }
+  .col-list {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    max-height: 34vh;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  .col-list div { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+  .col-list div span:first-child { color: var(--ink-faint); }
 </style>
 
 <div class="wrap">
   <header class="top">
     <div class="eyebrow">Combinatorics · grid generator</div>
     <h1>Generalized Delannoy Grids</h1>
-    <p class="sub">Builds the D<sup>k</sup>(m, n) table from Edwards &amp; Griffiths, <em>Delannoy Constructions</em>: the top row is always 1, the left column is C(m+k, k), and every interior cell is the sum of the cell above, above-left, and left of it. Set k, choose the grid's row and column count, and optionally reduce every entry modulo μ.</p>
+    <p class="sub">Builds Delannoy arrays following Edwards &amp; Griffiths, <em>Delannoy Constructions</em>: an array R(m, n) satisfying R(m,n) = R(m&minus;1,n) + R(m,n&minus;1) + R(m&minus;1,n&minus;1), seeded either by D<sup>k</sup>(m,0) = C(m+k,k) or by seeds you supply. Transform the result with the paper's horizontal/vertical sum operators, inspect it mod p, or export it.</p>
   </header>
 
   <div class="layout">
     <div class="panel" id="panel">
-      <div>
-        <h2>Parameters</h2>
-      </div>
+      <div><h2>Generate</h2></div>
 
-      <div class="field">
+      <label class="toggle-row">
+        <input type="checkbox" id="seedModeOn">
+        Use custom seeds instead of k
+      </label>
+
+      <div class="field" id="kModeField">
         <label>Generalization index k <span class="hint">k = 0 is the classic Delannoy table</span></label>
         <input type="number" id="k" value="0" min="0" max="60" step="1">
+      </div>
+
+      <div id="seedFields" style="display:none; flex-direction:column; gap:12px;">
+        <div class="field">
+          <label>Top row seeds <span class="hint" id="topSeedHint">n = 0..w</span></label>
+          <textarea id="topSeeds" rows="2" placeholder="e.g. 1, 1, 1, 1, 1"></textarea>
+        </div>
+        <div class="field">
+          <label>Left column seeds <span class="hint" id="leftSeedHint">m = 1..h</span></label>
+          <textarea id="leftSeeds" rows="2" placeholder="e.g. 2, 3, 4, 5"></textarea>
+        </div>
+        <p class="footnote">Any array built this way that satisfies the recurrence is a <em>Delannoy array</em> (Edwards &amp; Griffiths, Def. 12) — it doesn't need to come from a binomial formula.</p>
       </div>
 
       <div class="field">
@@ -485,7 +519,7 @@
         </label>
         <div class="sub-fields" id="modFields" data-disabled="true" style="margin-top:10px;">
           <div class="field">
-            <label>μ <span class="hint">every entry mod μ</span></label>
+            <label>p <span class="hint">every entry mod p</span></label>
             <input type="number" id="mod" value="7" min="2" max="100000" step="1">
           </div>
           <label class="toggle-row">
@@ -506,21 +540,33 @@
 
       <div class="btn-row">
         <button class="btn-ghost" id="copyLinkBtn">Copy link to this grid</button>
-        <button class="btn-ghost" id="copyTsvBtn">Copy as TSV</button>
+        <button class="btn-ghost" id="batchBtn">Batch export k range…</button>
       </div>
 
       <div class="formula-card" id="formulaCard"></div>
 
-      <p style="font-size:11.5px; color:var(--ink-faint); line-height:1.6; margin:0;">
-        Exact values use arbitrary-precision integers; a modulus reduces every entry, including intermediate sums, at each step, so it stays exact and fast at any grid size. The page URL updates with your settings — copy it directly, or use "Copy link to this grid", to share an exact configuration.<br><br>
+      <p class="footnote">
+        Exact values use arbitrary-precision integers; a modulus reduces every entry, including intermediate sums, at each step, so it stays exact and fast at any grid size. The page URL updates with your k-mode settings — copy it directly, or use "Copy link to this grid".<br><br>
         Steven Edwards &amp; William Griffiths, <em>Delannoy Constructions</em>, J. Integer Sequences 27 (2024), Article 24.1.8.
       </p>
     </div>
 
     <div class="stage">
       <div class="stage-head">
-        <div class="stage-title">D<sup id="titleK">0</sup>(m, n)</div>
+        <div class="stage-title" id="stageTitle">D<sup>0</sup>(m, n)</div>
         <div class="stage-meta" id="stageMeta"></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn-ghost" id="btnApplyH" title="h(R)(m,n) = R(m,n) + R(m,n+1) — Edwards &amp; Griffiths §5">Apply h (horizontal sum)</button>
+        <button class="btn-ghost" id="btnApplyV" title="v(R)(m,n) = R(m,n) + R(m+1,n) — Edwards &amp; Griffiths §5">Apply v (vertical sum)</button>
+        <button class="btn-ghost" id="btnReset">Reset transforms</button>
+        <div class="sep"></div>
+        <button class="btn-ghost" id="btnConvolve">Convolve columns…</button>
+        <button class="btn-ghost" id="btnBlock">Inspect p×p block…</button>
+        <div class="sep"></div>
+        <button class="btn-ghost" id="btnCopyTsv">Copy as TSV</button>
+        <button class="btn-ghost" id="btnDownloadCsv">Download .csv</button>
+        <button class="btn-ghost" id="btnDownloadTxt">Download .txt</button>
       </div>
       <div class="legend" id="legend" style="display:none;"></div>
       <div class="grid-scroll" id="gridScroll">
@@ -532,12 +578,20 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="copy-overlay" id="copyOverlay">
-  <div class="copy-box">
+<div class="overlay" id="copyOverlay">
+  <div class="box">
     <h3 id="copyOverlayTitle">Copy this</h3>
     <p>Your browser didn't allow an automatic copy here. The text below is pre-selected — press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd> to copy it.</p>
-    <textarea id="copyOverlayText" readonly></textarea>
-    <button class="btn-primary" id="copyOverlayClose">Done</button>
+    <textarea id="copyOverlayText" class="mono-out" readonly></textarea>
+    <div class="box-actions"><button class="btn-primary" id="copyOverlayClose">Done</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="toolModal">
+  <div class="box wide">
+    <div class="box-actions box-close"><button class="btn-ghost" id="toolModalClose">Close ✕</button></div>
+    <h3 id="toolModalTitle">Tool</h3>
+    <div id="toolModalBody"></div>
   </div>
 </div>
 
@@ -547,36 +601,52 @@
   var kEl = $('k'), wEl = $('width'), hEl = $('height');
   var modOnEl = $('modOn'), modEl = $('mod'), colorOnEl = $('colorOn'), compactEl = $('compactOn');
   var modFields = $('modFields');
+  var seedModeEl = $('seedModeOn'), kModeField = $('kModeField'), seedFields = $('seedFields');
+  var topSeedsEl = $('topSeeds'), leftSeedsEl = $('leftSeeds');
+  var topSeedHint = $('topSeedHint'), leftSeedHint = $('leftSeedHint');
   var errorMsg = $('errorMsg');
   var gridScroll = $('gridScroll');
   var legend = $('legend');
   var stageMeta = $('stageMeta');
-  var titleK = $('titleK');
+  var stageTitle = $('stageTitle');
   var formulaCard = $('formulaCard');
   var toast = $('toast');
 
+  var current = null;   // { grid, rowCount, colCount, modOn, mod, k, seedMode, baseLabel, hCount, vCount }
+  var original = null;
+
+  // ---------- number helpers ----------
   function binom(n, k) {
     if (k < 0n) return 0n;
     if (k === 0n || k === n) return 1n;
     if (k > n - k) k = n - k;
     var result = 1n;
-    for (var i = 0n; i < k; i++) {
-      result = (result * (n - i)) / (i + 1n);
-    }
+    for (var i = 0n; i < k; i++) result = (result * (n - i)) / (i + 1n);
     return result;
   }
+  function modNorm(x, m) { var r = x % m; return r < 0n ? r + m : r; }
 
+  function fmt(v, compact) {
+    var s = v.toString();
+    var neg = s[0] === '-';
+    var digits = neg ? s.slice(1) : s;
+    if (!compact || digits.length <= 7) return { html: s, title: s };
+    var exp = digits.length - 1;
+    var mantissa = digits[0] + '.' + digits.slice(1, 4);
+    return { html: (neg ? '&minus;' : '') + mantissa + '&times;10<span class="exp">' + exp + '</span>', title: s };
+  }
+  function hueFor(residue, m) { return Math.round((residue * 360) / m) % 360; }
+
+  // ---------- toast / copy / download ----------
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(showToast._t);
-    showToast._t = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+    showToast._t = setTimeout(function () { toast.classList.remove('show'); }, 2000);
   }
 
   var copyOverlay = $('copyOverlay'), copyOverlayTitle = $('copyOverlayTitle'), copyOverlayText = $('copyOverlayText');
-  $('copyOverlayClose').addEventListener('click', function () {
-    copyOverlay.classList.remove('show');
-  });
+  $('copyOverlayClose').addEventListener('click', function () { copyOverlay.classList.remove('show'); });
 
   function showCopyFallback(text, title) {
     copyOverlayTitle.textContent = title;
@@ -590,7 +660,6 @@
     opts = opts || {};
     var successMsg = opts.successMsg || 'Copied';
     var title = opts.title || 'Copy this';
-
     function legacyFallback() {
       var ta = document.createElement('textarea');
       ta.value = text;
@@ -602,94 +671,260 @@
       var ok = false;
       try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
       document.body.removeChild(ta);
-      if (ok) {
-        showToast(successMsg);
-      } else {
-        showCopyFallback(text, title);
-      }
+      if (ok) showToast(successMsg); else showCopyFallback(text, title);
     }
-
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        showToast(successMsg);
-      }).catch(legacyFallback);
+      navigator.clipboard.writeText(text).then(function () { showToast(successMsg); }).catch(legacyFallback);
     } else {
       legacyFallback();
     }
   }
 
-  function fmt(v, compact) {
-    var s = v.toString();
-    var neg = s[0] === '-';
-    var digits = neg ? s.slice(1) : s;
-    if (!compact || digits.length <= 7) {
-      return { html: s, title: s };
+  function downloadFile(filename, content, mime) {
+    try {
+      var blob = new Blob([content], { type: mime || 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      showToast('Downloaded ' + filename);
+    } catch (e) {
+      copyText(content, { successMsg: 'Copied (download unavailable here)', title: filename });
     }
-    var exp = digits.length - 1;
-    var mantissa = digits[0] + '.' + digits.slice(1, 4);
-    return { html: (neg ? '&minus;' : '') + mantissa + '&times;10<span class="exp">' + exp + '</span>', title: s };
   }
 
-  function hueFor(residue, m) {
-    return Math.round((residue * 360) / m) % 360;
+  // ---------- generic tool modal ----------
+  var toolModal = $('toolModal'), toolModalTitle = $('toolModalTitle'), toolModalBody = $('toolModalBody');
+  $('toolModalClose').addEventListener('click', function () { toolModal.classList.remove('show'); });
+  function openToolModal(title, bodyHtml) {
+    toolModalTitle.textContent = title;
+    toolModalBody.innerHTML = bodyHtml;
+    toolModal.classList.add('show');
   }
 
-  function readState() {
-    var k = parseInt(kEl.value, 10);
-    var w = parseInt(wEl.value, 10);
-    var h = parseInt(hEl.value, 10);
-    var modOn = modOnEl.checked;
-    var mod = parseInt(modEl.value, 10);
-    var colorOn = colorOnEl.checked;
-    var compact = compactEl.checked;
-
-    if (!Number.isFinite(k) || k < 0 || k > 60) return { error: 'k must be an integer between 0 and 60.' };
-    if (!Number.isFinite(w) || w < 1 || w > 250) return { error: 'Columns (n) must be an integer between 1 and 250.' };
-    if (!Number.isFinite(h) || h < 1 || h > 250) return { error: 'Rows (m) must be an integer between 1 and 250.' };
-    if (modOn) {
-      if (!Number.isFinite(mod) || mod < 2 || mod > 100000) return { error: 'Modulus must be an integer between 2 and 100000.' };
+  // ---------- grid construction ----------
+  function computeGridFromK(k, w, h, modOn, mod) {
+    var kBig = BigInt(k);
+    var rowCount = h + 1, colCount = w + 1;
+    var mBig = modOn ? BigInt(mod) : null;
+    var grid = new Array(rowCount);
+    for (var i = 0; i < rowCount; i++) grid[i] = new Array(colCount);
+    for (var j = 0; j < colCount; j++) grid[0][j] = modOn ? modNorm(1n, mBig) : 1n;
+    for (i = 1; i < rowCount; i++) {
+      var v = binom(kBig + BigInt(i), kBig);
+      grid[i][0] = modOn ? modNorm(v, mBig) : v;
     }
-    return { k: k, w: w, h: h, modOn: modOn, mod: mod, colorOn: colorOn, compact: compact };
-  }
-
-  function computeGrid(state) {
-    var k = BigInt(state.k);
-    var w = state.w, h = state.h;
-    var useMod = state.modOn;
-    var m = useMod ? BigInt(state.mod) : null;
-
-    var grid = new Array(h + 1);
-    for (var i = 0; i <= h; i++) grid[i] = new Array(w + 1);
-
-    for (var j = 0; j <= w; j++) {
-      grid[0][j] = useMod ? (1n % m) : 1n;
-    }
-    for (i = 1; i <= h; i++) {
-      var v = binom(k + BigInt(i), k);
-      grid[i][0] = useMod ? (v % m) : v;
-    }
-    for (i = 1; i <= h; i++) {
-      for (j = 1; j <= w; j++) {
+    for (i = 1; i < rowCount; i++) {
+      for (j = 1; j < colCount; j++) {
         var sum = grid[i - 1][j] + grid[i - 1][j - 1] + grid[i][j - 1];
-        grid[i][j] = useMod ? (sum % m) : sum;
+        grid[i][j] = modOn ? modNorm(sum, mBig) : sum;
       }
     }
     return grid;
   }
 
-  function render(state, grid) {
-    titleK.textContent = state.k;
-    stageMeta.textContent = 'm = 0..' + state.h + ' (rows) · n = 0..' + state.w + ' (columns)' + (state.modOn ? ' · mod ' + state.mod : ' · exact');
+  function computeGridFromSeeds(topRow, leftCol, w, h, modOn, mod) {
+    var rowCount = h + 1, colCount = w + 1;
+    var mBig = modOn ? BigInt(mod) : null;
+    var grid = new Array(rowCount);
+    for (var i = 0; i < rowCount; i++) grid[i] = new Array(colCount);
+    for (var j = 0; j < colCount; j++) grid[0][j] = modOn ? modNorm(topRow[j], mBig) : topRow[j];
+    for (i = 1; i < rowCount; i++) grid[i][0] = modOn ? modNorm(leftCol[i - 1], mBig) : leftCol[i - 1];
+    for (i = 1; i < rowCount; i++) {
+      for (j = 1; j < colCount; j++) {
+        var sum = grid[i - 1][j] + grid[i - 1][j - 1] + grid[i][j - 1];
+        grid[i][j] = modOn ? modNorm(sum, mBig) : sum;
+      }
+    }
+    return grid;
+  }
 
-    formulaCard.innerHTML =
-      '<div class="line">D<span class="kbadge">' + state.k + '</span>(m, 0) = C(m+' + state.k + ', ' + state.k + ')</div>' +
-      '<div class="line">D<span class="kbadge">' + state.k + '</span>(0, n) = 1</div>' +
-      '<div class="line">D<span class="kbadge">' + state.k + '</span>(m, n) = <b>↑</b> + <b>↖</b> + <b>←</b></div>' +
-      (state.modOn ? '<div style="margin-top:6px;">reduced mod ' + state.mod + ' at every step</div>' : '');
+  function applyHorizontalSum(cur) {
+    if (cur.colCount < 2) return null;
+    var newColCount = cur.colCount - 1;
+    var mBig = cur.modOn ? BigInt(cur.mod) : null;
+    var grid = new Array(cur.rowCount);
+    for (var i = 0; i < cur.rowCount; i++) {
+      grid[i] = new Array(newColCount);
+      for (var j = 0; j < newColCount; j++) {
+        var sum = cur.grid[i][j] + cur.grid[i][j + 1];
+        grid[i][j] = cur.modOn ? modNorm(sum, mBig) : sum;
+      }
+    }
+    return { grid: grid, rowCount: cur.rowCount, colCount: newColCount, modOn: cur.modOn, mod: cur.mod,
+      k: cur.k, seedMode: cur.seedMode, baseLabel: cur.baseLabel, hCount: (cur.hCount || 0) + 1, vCount: (cur.vCount || 0) };
+  }
 
-    if (state.modOn && state.colorOn) {
+  function applyVerticalSum(cur) {
+    if (cur.rowCount < 2) return null;
+    var newRowCount = cur.rowCount - 1;
+    var mBig = cur.modOn ? BigInt(cur.mod) : null;
+    var grid = new Array(newRowCount);
+    for (var i = 0; i < newRowCount; i++) {
+      grid[i] = new Array(cur.colCount);
+      for (var j = 0; j < cur.colCount; j++) {
+        var sum = cur.grid[i][j] + cur.grid[i + 1][j];
+        grid[i][j] = cur.modOn ? modNorm(sum, mBig) : sum;
+      }
+    }
+    return { grid: grid, rowCount: newRowCount, colCount: cur.colCount, modOn: cur.modOn, mod: cur.mod,
+      k: cur.k, seedMode: cur.seedMode, baseLabel: cur.baseLabel, hCount: (cur.hCount || 0), vCount: (cur.vCount || 0) + 1 };
+  }
+
+  // ---------- shared table / text builders ----------
+  function buildTableHTML(grid, rowCount, colCount, opts) {
+    opts = opts || {};
+    var compact = !!opts.compact, colorOn = !!opts.colorOn, modOn = !!opts.modOn, mod = opts.mod;
+    var rowOffset = opts.rowOffset || 0, colOffset = opts.colOffset || 0;
+    var corner = opts.corner !== undefined ? opts.corner : 'm \\ n';
+    var edgeFn = opts.edgeFn;
+    var out = ['<table class="dgrid"><thead><tr><th class="corner">' + corner + '</th>'];
+    for (var j = 0; j < colCount; j++) out.push('<th>' + (j + colOffset) + '</th>');
+    out.push('</tr></thead><tbody>');
+    for (var i = 0; i < rowCount; i++) {
+      out.push('<tr><th>' + (i + rowOffset) + '</th>');
+      for (var jj = 0; jj < colCount; jj++) {
+        var val = grid[i][jj];
+        var f = fmt(val, compact);
+        var cls = (edgeFn && edgeFn(i, jj)) ? ' class="edge"' : '';
+        var style = '';
+        if (modOn && colorOn) {
+          var residue = Number(val);
+          var hue = hueFor(residue, mod);
+          style = ' style="background:hsla(' + hue + ',62%,55%,0.22);"';
+        }
+        out.push('<td' + cls + style + ' title="' + f.title + '">' + f.html + '</td>');
+      }
+      out.push('</tr>');
+    }
+    out.push('</tbody></table>');
+    return out.join('');
+  }
+
+  function buildDelimited(grid, rowCount, colCount, delim, cornerLabel, rowOffset, colOffset) {
+    rowOffset = rowOffset || 0; colOffset = colOffset || 0;
+    var lines = [];
+    var header = [cornerLabel || 'm\\n'];
+    for (var j = 0; j < colCount; j++) header.push(j + colOffset);
+    lines.push(header.join(delim));
+    for (var i = 0; i < rowCount; i++) {
+      var row = [i + rowOffset];
+      for (var j2 = 0; j2 < colCount; j2++) row.push(grid[i][j2].toString());
+      lines.push(row.join(delim));
+    }
+    return lines.join('\n');
+  }
+
+  // ---------- validation ----------
+  function readGenParams() {
+    var w = parseInt(wEl.value, 10);
+    var h = parseInt(hEl.value, 10);
+    var modOn = modOnEl.checked;
+    var mod = parseInt(modEl.value, 10);
+    if (!Number.isFinite(w) || w < 1 || w > 250) return { error: 'Columns (n) must be an integer between 1 and 250.' };
+    if (!Number.isFinite(h) || h < 1 || h > 250) return { error: 'Rows (m) must be an integer between 1 and 250.' };
+    if (modOn && (!Number.isFinite(mod) || mod < 2 || mod > 100000)) return { error: 'p must be an integer between 2 and 100000.' };
+    return { w: w, h: h, modOn: modOn, mod: mod };
+  }
+
+  function parseSeedList(text, expectedLen, label) {
+    var tokens = text.split(/[\s,]+/).map(function (t) { return t.trim(); }).filter(function (t) { return t.length > 0; });
+    if (tokens.length !== expectedLen) return { error: label + ': expected ' + expectedLen + ' value(s), got ' + tokens.length + '.' };
+    var values = [];
+    for (var i = 0; i < tokens.length; i++) {
+      if (!/^-?\d+$/.test(tokens[i])) return { error: label + ': "' + tokens[i] + '" is not an integer.' };
+      values.push(BigInt(tokens[i]));
+    }
+    return { values: values };
+  }
+
+  // ---------- generate ----------
+  function updateSeedHints() {
+    var w = parseInt(wEl.value, 10), h = parseInt(hEl.value, 10);
+    if (!Number.isFinite(w)) w = 0;
+    if (!Number.isFinite(h)) h = 0;
+    topSeedHint.textContent = 'n = 0..' + w + ' (' + (w + 1) + ' values)';
+    leftSeedHint.textContent = 'm = 1..' + h + ' (' + h + ' values; m=0 comes from the top row\'s first value)';
+  }
+
+  function syncSeedMode() {
+    var on = seedModeEl.checked;
+    kModeField.style.display = on ? 'none' : 'flex';
+    seedFields.style.display = on ? 'flex' : 'none';
+    if (on) updateSeedHints();
+  }
+
+  function generate() {
+    var gp = readGenParams();
+    if (gp.error) { errorMsg.textContent = gp.error; return; }
+
+    var grid, baseLabel, k = null, seedMode = seedModeEl.checked;
+
+    if (seedMode) {
+      var topRes = parseSeedList(topSeedsEl.value, gp.w + 1, 'Top row seeds');
+      if (topRes.error) { errorMsg.textContent = topRes.error; return; }
+      var leftRes = parseSeedList(leftSeedsEl.value, gp.h, 'Left column seeds');
+      if (leftRes.error) { errorMsg.textContent = leftRes.error; return; }
+      grid = computeGridFromSeeds(topRes.values, leftRes.values, gp.w, gp.h, gp.modOn, gp.mod);
+      baseLabel = 'R(m, n)';
+    } else {
+      var k0 = parseInt(kEl.value, 10);
+      if (!Number.isFinite(k0) || k0 < 0 || k0 > 60) { errorMsg.textContent = 'k must be an integer between 0 and 60.'; return; }
+      k = k0;
+      grid = computeGridFromK(k, gp.w, gp.h, gp.modOn, gp.mod);
+      baseLabel = 'D<sup>' + k + '</sup>(m, n)';
+    }
+
+    errorMsg.textContent = '';
+    current = original = {
+      grid: grid, rowCount: gp.h + 1, colCount: gp.w + 1,
+      modOn: gp.modOn, mod: gp.mod, k: k, seedMode: seedMode, baseLabel: baseLabel, hCount: 0, vCount: 0
+    };
+    renderCurrent();
+
+    if (!seedMode) {
+      var parts = ['k=' + k, 'w=' + gp.w, 'h=' + gp.h];
+      if (gp.modOn) { parts.push('mod=' + gp.mod); parts.push('color=' + (colorOnEl.checked ? 1 : 0)); }
+      if (compactEl.checked) parts.push('compact=1');
+      history.replaceState(null, '', '#' + parts.join('&'));
+    }
+  }
+
+  // ---------- render current ----------
+  function renderCurrent() {
+    if (!current) return;
+    var compact = compactEl.checked, colorOn = colorOnEl.checked;
+
+    stageTitle.innerHTML = current.baseLabel;
+    var metaLines = [];
+    metaLines.push('m = 0..' + (current.rowCount - 1) + ' (rows) · n = 0..' + (current.colCount - 1) + ' (columns)' + (current.modOn ? ' · mod ' + current.mod : ' · exact'));
+    if (current.hCount || current.vCount) {
+      var t = [];
+      if (current.hCount) t.push('h × ' + current.hCount);
+      if (current.vCount) t.push('v × ' + current.vCount);
+      metaLines.push('transforms applied: ' + t.join(', '));
+    }
+    stageMeta.innerHTML = metaLines.join('<br>');
+
+    if (current.seedMode) {
+      formulaCard.innerHTML =
+        '<div class="line">R(m, 0), R(0, n) — your seeds</div>' +
+        '<div class="line">R(m, n) = <b>↑</b> + <b>↖</b> + <b>←</b></div>' +
+        (current.modOn ? '<div style="margin-top:6px;">reduced mod ' + current.mod + ' at every step</div>' : '');
+    } else {
+      formulaCard.innerHTML =
+        '<div class="line">D<span class="kbadge">' + current.k + '</span>(m, 0) = C(m+' + current.k + ', ' + current.k + ')</div>' +
+        '<div class="line">D<span class="kbadge">' + current.k + '</span>(0, n) = 1</div>' +
+        '<div class="line">D<span class="kbadge">' + current.k + '</span>(m, n) = <b>↑</b> + <b>↖</b> + <b>←</b></div>' +
+        (current.modOn ? '<div style="margin-top:6px;">reduced mod ' + current.mod + ' at every step</div>' : '');
+    }
+
+    if (current.modOn && colorOn) {
       legend.style.display = 'flex';
-      var m = state.mod;
+      var m = current.mod;
       var steps = Math.min(m, 12);
       var html = '<span style="color:var(--ink-faint);">residue mod ' + m + ':</span>';
       for (var s = 0; s < steps; s++) {
@@ -703,41 +938,238 @@
       legend.innerHTML = '';
     }
 
-    var w = state.w, h = state.h;
-    var out = ['<table class="dgrid"><thead><tr><th class="corner">m \\ n</th>'];
-    for (var j = 0; j <= w; j++) out.push('<th>' + j + '</th>');
-    out.push('</tr></thead><tbody>');
+    gridScroll.innerHTML = buildTableHTML(current.grid, current.rowCount, current.colCount, {
+      compact: compact, colorOn: colorOn, modOn: current.modOn, mod: current.mod,
+      edgeFn: function (i, j) { return i === 0 || j === 0; }
+    });
 
-    for (var i = 0; i <= h; i++) {
-      out.push('<tr><th>' + i + '</th>');
-      for (j = 0; j <= w; j++) {
-        var val = grid[i][j];
-        var f = fmt(val, state.compact);
-        var cls = (i === 0 || j === 0) ? ' class="edge"' : '';
-        var style = '';
-        if (state.modOn && state.colorOn) {
-          var residue = Number(val);
-          var hue = hueFor(residue, state.mod);
-          style = ' style="background:hsla(' + hue + ',62%,55%,0.22);"';
-        }
-        out.push('<td' + cls + style + ' title="' + f.title + '">' + f.html + '</td>');
+    $('btnApplyH').disabled = current.colCount < 2;
+    $('btnApplyV').disabled = current.rowCount < 2;
+    $('btnReset').disabled = !(current.hCount || current.vCount);
+    $('btnBlock').disabled = !current.modOn;
+  }
+
+  colorOnEl.addEventListener('change', renderCurrent);
+  compactEl.addEventListener('change', renderCurrent);
+
+  function syncModFields() { modFields.setAttribute('data-disabled', modOnEl.checked ? 'false' : 'true'); }
+  modOnEl.addEventListener('change', syncModFields);
+  seedModeEl.addEventListener('change', syncSeedMode);
+  wEl.addEventListener('input', updateSeedHints);
+  hEl.addEventListener('input', updateSeedHints);
+
+  $('genBtn').addEventListener('click', generate);
+
+  // ---------- toolbar: transforms ----------
+  $('btnApplyH').addEventListener('click', function () {
+    if (!current) return;
+    var next = applyHorizontalSum(current);
+    if (!next) { showToast('Need at least 2 columns to apply h'); return; }
+    current = next;
+    renderCurrent();
+  });
+  $('btnApplyV').addEventListener('click', function () {
+    if (!current) return;
+    var next = applyVerticalSum(current);
+    if (!next) { showToast('Need at least 2 rows to apply v'); return; }
+    current = next;
+    renderCurrent();
+  });
+  $('btnReset').addEventListener('click', function () {
+    if (!original) return;
+    current = original;
+    renderCurrent();
+  });
+
+  // ---------- toolbar: export ----------
+  function currentFileBase() {
+    if (!current) return 'delannoy';
+    var tag = current.seedMode ? 'R' : 'Dk' + current.k;
+    if (current.hCount) tag += '_h' + current.hCount;
+    if (current.vCount) tag += '_v' + current.vCount;
+    return 'delannoy_' + tag + '_' + current.rowCount + 'x' + current.colCount + (current.modOn ? '_mod' + current.mod : '');
+  }
+
+  $('btnCopyTsv').addEventListener('click', function () {
+    if (!current) return;
+    copyText(buildDelimited(current.grid, current.rowCount, current.colCount, '\t'), { successMsg: 'Grid copied as TSV — paste into a spreadsheet', title: 'Grid as TSV' });
+  });
+  $('btnDownloadCsv').addEventListener('click', function () {
+    if (!current) return;
+    downloadFile(currentFileBase() + '.csv', buildDelimited(current.grid, current.rowCount, current.colCount, ','), 'text/csv');
+  });
+  $('btnDownloadTxt').addEventListener('click', function () {
+    if (!current) return;
+    downloadFile(currentFileBase() + '.txt', buildDelimited(current.grid, current.rowCount, current.colCount, '\t'), 'text/plain');
+  });
+
+  $('copyLinkBtn').addEventListener('click', function () {
+    if (seedModeEl.checked) { showToast('Link sharing captures k-mode settings only'); return; }
+    var gp = readGenParams();
+    if (gp.error) { errorMsg.textContent = gp.error; return; }
+    var k = parseInt(kEl.value, 10);
+    var parts = ['k=' + k, 'w=' + gp.w, 'h=' + gp.h];
+    if (gp.modOn) { parts.push('mod=' + gp.mod); parts.push('color=' + (colorOnEl.checked ? 1 : 0)); }
+    if (compactEl.checked) parts.push('compact=1');
+    var url = location.origin + location.pathname + '#' + parts.join('&');
+    copyText(url, { successMsg: 'Link copied', title: 'Link to this grid' });
+  });
+
+  // ---------- convolve columns ----------
+  $('btnConvolve').addEventListener('click', function () {
+    if (!current) { showToast('Generate a grid first'); return; }
+    var maxCol = current.colCount - 1;
+    openToolModal('Convolve two columns',
+      '<p>Computes the Cauchy product of two columns of the current grid: result(m) = &sum;<sub>i=0..m</sub> grid(i,x)&middot;grid(m&minus;i,y), for m = 0..' + (current.rowCount - 1) + '.</p>' +
+      '<div class="row2">' +
+      '<div class="field"><label>Column x <span class="hint">0..' + maxCol + '</span></label><input type="number" id="convX" min="0" max="' + maxCol + '" value="0"></div>' +
+      '<div class="field"><label>Column y <span class="hint">0..' + maxCol + '</span></label><input type="number" id="convY" min="0" max="' + maxCol + '" value="0"></div>' +
+      '</div>' +
+      '<div class="error-msg" id="convError"></div>' +
+      '<div class="box-actions"><button class="btn-primary" id="convRun">Convolve</button></div>' +
+      '<div id="convResult"></div>'
+    );
+    $('convRun').addEventListener('click', function () {
+      var x = parseInt($('convX').value, 10), y = parseInt($('convY').value, 10);
+      var errEl = $('convError');
+      if (!Number.isFinite(x) || x < 0 || x > maxCol || !Number.isFinite(y) || y < 0 || y > maxCol) {
+        errEl.textContent = 'Column indices must be between 0 and ' + maxCol + '.';
+        return;
       }
-      out.push('</tr>');
-    }
-    out.push('</tbody></table>');
-    gridScroll.innerHTML = out.join('');
-  }
+      errEl.textContent = '';
+      var mBig = current.modOn ? BigInt(current.mod) : null;
+      var result = new Array(current.rowCount);
+      for (var n = 0; n < current.rowCount; n++) {
+        var sum = 0n;
+        for (var i = 0; i <= n; i++) sum += current.grid[i][x] * current.grid[n - i][y];
+        result[n] = current.modOn ? modNorm(sum, mBig) : sum;
+      }
+      var listHtml = '<div class="modal-result"><div class="col-list">';
+      for (var m = 0; m < result.length; m++) listHtml += '<div><span>m=' + m + '</span><span>' + result[m].toString() + '</span></div>';
+      listHtml += '</div><div class="box-actions"><button class="btn-ghost" id="convCopy">Copy as list</button></div></div>';
+      $('convResult').innerHTML = listHtml;
+      $('convCopy').addEventListener('click', function () {
+        copyText(result.map(function (v, idx) { return idx + '\t' + v.toString(); }).join('\n'), { successMsg: 'Convolution copied', title: 'Convolution of columns ' + x + ' and ' + y });
+      });
+    });
+  });
 
-  function stateToHash(state) {
-    var parts = ['k=' + state.k, 'w=' + state.w, 'h=' + state.h];
-    if (state.modOn) {
-      parts.push('mod=' + state.mod);
-      parts.push('color=' + (state.colorOn ? 1 : 0));
+  // ---------- inspect p×p block ----------
+  $('btnBlock').addEventListener('click', function () {
+    if (!current || !current.modOn) { showToast('Generate a grid with a modulus first'); return; }
+    var p = current.mod;
+    var maxBlockRow = Math.floor(current.rowCount / p) - 1;
+    var maxBlockCol = Math.floor(current.colCount / p) - 1;
+    if (maxBlockRow < 0 || maxBlockCol < 0) {
+      openToolModal('Inspect p×p block', '<p>The current grid (' + current.rowCount + '×' + current.colCount + ') is smaller than p = ' + p + ', so it doesn\'t contain a full block.</p>');
+      return;
     }
-    if (state.compact) parts.push('compact=1');
-    return '#' + parts.join('&');
-  }
+    openToolModal('Inspect p×p block',
+      '<p>Slices out the p×p block at block-index (m, n) — i.e. rows [m&middot;p, (m+1)&middot;p) and columns [n&middot;p, (n+1)&middot;p) of the full grid — with p = ' + p + '. Optionally trim to one quadrant, split at offset p&minus;k from a chosen k.</p>' +
+      '<div class="row2">' +
+      '<div class="field"><label>Block row <span class="hint">0..' + maxBlockRow + '</span></label><input type="number" id="blkM" min="0" max="' + maxBlockRow + '" value="0"></div>' +
+      '<div class="field"><label>Block col <span class="hint">0..' + maxBlockCol + '</span></label><input type="number" id="blkN" min="0" max="' + maxBlockCol + '" value="0"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+      '<div class="field"><label>k <span class="hint">for quadrant split</span></label><input type="number" id="blkK" min="0" max="' + p + '" value="' + (current.k || 0) + '"></div>' +
+      '<div class="field"><label>Quadrant</label><select id="blkQuad">' +
+      '<option value="0">Full block</option><option value="1">Q1 (top-left)</option><option value="2">Q2 (top-right)</option>' +
+      '<option value="3">Q3 (bottom-right)</option><option value="4">Q4 (bottom-left)</option></select></div>' +
+      '</div>' +
+      '<div class="error-msg" id="blkError"></div>' +
+      '<div class="box-actions"><button class="btn-primary" id="blkRun">View block</button></div>' +
+      '<div id="blkResult"></div>'
+    );
+    $('blkRun').addEventListener('click', function () {
+      var bm = parseInt($('blkM').value, 10), bn = parseInt($('blkN').value, 10);
+      var k = parseInt($('blkK').value, 10);
+      var quad = parseInt($('blkQuad').value, 10);
+      var errEl = $('blkError');
+      if (!Number.isFinite(bm) || bm < 0 || bm > maxBlockRow || !Number.isFinite(bn) || bn < 0 || bn > maxBlockCol) {
+        errEl.textContent = 'Block indices out of range.'; return;
+      }
+      if (!Number.isFinite(k) || k < 0 || k > p) { errEl.textContent = 'k must be between 0 and p.'; return; }
+      var startRow = bm * p, startCol = bn * p;
+      var r1 = 0, r2 = p, c1 = 0, c2 = p;
+      if (quad === 1) { r2 = p - k; c2 = p - k; }
+      else if (quad === 2) { r2 = p - k; c1 = p - k; }
+      else if (quad === 3) { r1 = p - k; c1 = p - k; }
+      else if (quad === 4) { r1 = p - k; c2 = p - k; }
+      var numRows = r2 - r1, numCols = c2 - c1;
+      if (numRows <= 0 || numCols <= 0) {
+        errEl.textContent = 'Quadrant ' + quad + ' has no area with k = ' + k + '.';
+        $('blkResult').innerHTML = '';
+        return;
+      }
+      errEl.textContent = '';
+      var sub = new Array(numRows);
+      for (var i = 0; i < numRows; i++) {
+        sub[i] = new Array(numCols);
+        for (var j = 0; j < numCols; j++) sub[i][j] = current.grid[startRow + r1 + i][startCol + c1 + j];
+      }
+      var tableHtml = buildTableHTML(sub, numRows, numCols, {
+        compact: compactEl.checked, colorOn: colorOnEl.checked, modOn: current.modOn, mod: current.mod,
+        rowOffset: startRow + r1, colOffset: startCol + c1
+      });
+      $('blkResult').innerHTML = '<div class="modal-result"><div class="grid-scroll">' + tableHtml + '</div>' +
+        '<div class="box-actions"><button class="btn-ghost" id="blkCopy">Copy as TSV</button></div></div>';
+      $('blkCopy').addEventListener('click', function () {
+        copyText(buildDelimited(sub, numRows, numCols, '\t', 'm\\n', startRow + r1, startCol + c1), { successMsg: 'Block copied', title: 'Block (' + bm + ',' + bn + ')' });
+      });
+    });
+  });
 
+  // ---------- batch export across a k range ----------
+  $('batchBtn').addEventListener('click', function () {
+    var gp = readGenParams();
+    openToolModal('Batch export across a k range',
+      '<p>Generates D<sup>k</sup>(m,n) for every k in a range, at the rows/columns/modulus currently set in the sidebar (rows ' + (gp.h || '?') + ', cols ' + (gp.w || '?') + '). Requires a modulus so file size stays reasonable.</p>' +
+      '<div class="row2">' +
+      '<div class="field"><label>Start k</label><input type="number" id="batchStart" min="0" max="60" value="0"></div>' +
+      '<div class="field"><label>End k</label><input type="number" id="batchEnd" min="0" max="60" value="5"></div>' +
+      '</div>' +
+      '<div class="error-msg" id="batchError"></div>' +
+      '<div class="box-actions">' +
+      '<button class="btn-ghost" id="batchPreview">Preview start-k</button>' +
+      '<button class="btn-primary" id="batchDownload">Download combined .csv</button>' +
+      '</div>' +
+      '<div id="batchResult"></div>'
+    );
+    function validateBatch() {
+      var gp2 = readGenParams();
+      var errEl = $('batchError');
+      if (gp2.error) { errEl.textContent = gp2.error; return null; }
+      if (!gp2.modOn) { errEl.textContent = 'Turn on "Apply modulus" in the sidebar first — batch export needs it.'; return null; }
+      var sk = parseInt($('batchStart').value, 10), ek = parseInt($('batchEnd').value, 10);
+      if (!Number.isFinite(sk) || sk < 0 || sk > 60 || !Number.isFinite(ek) || ek < 0 || ek > 60 || ek < sk) {
+        errEl.textContent = 'Enter a valid k range (0-60, end ≥ start).'; return null;
+      }
+      if (ek - sk + 1 > 41) { errEl.textContent = 'Range too large — keep it to 41 k-values or fewer.'; return null; }
+      errEl.textContent = '';
+      return { gp: gp2, sk: sk, ek: ek };
+    }
+    $('batchPreview').addEventListener('click', function () {
+      var v = validateBatch();
+      if (!v) return;
+      var grid = computeGridFromK(v.sk, v.gp.w, v.gp.h, true, v.gp.mod);
+      var tableHtml = buildTableHTML(grid, v.gp.h + 1, v.gp.w + 1, { compact: compactEl.checked, colorOn: true, modOn: true, mod: v.gp.mod, edgeFn: function (i, j) { return i === 0 || j === 0; } });
+      $('batchResult').innerHTML = '<div class="modal-result"><p>Preview of k = ' + v.sk + ':</p><div class="grid-scroll">' + tableHtml + '</div></div>';
+    });
+    $('batchDownload').addEventListener('click', function () {
+      var v = validateBatch();
+      if (!v) return;
+      var sections = [];
+      for (var k = v.sk; k <= v.ek; k++) {
+        var grid = computeGridFromK(k, v.gp.w, v.gp.h, true, v.gp.mod);
+        sections.push('# D^' + k + '(m,n)  mod ' + v.gp.mod + '  rows=' + (v.gp.h + 1) + ' cols=' + (v.gp.w + 1));
+        sections.push(buildDelimited(grid, v.gp.h + 1, v.gp.w + 1, ','));
+      }
+      var filename = 'Delannoy_Dk_k' + v.sk + 'to' + v.ek + '_' + (v.gp.h + 1) + 'x' + (v.gp.w + 1) + '_mod' + v.gp.mod + '.csv';
+      downloadFile(filename, sections.join('\n\n'), 'text/csv');
+    });
+  });
+
+  // ---------- URL hash state (k-mode only) ----------
   function hashToFields() {
     var hash = location.hash.replace(/^#/, '');
     if (!hash) return false;
@@ -749,69 +1181,19 @@
     if (params.k !== undefined) kEl.value = params.k;
     if (params.w !== undefined) wEl.value = params.w;
     if (params.h !== undefined) hEl.value = params.h;
-    if (params.mod !== undefined) {
-      modOnEl.checked = true;
-      modEl.value = params.mod;
-    }
+    if (params.mod !== undefined) { modOnEl.checked = true; modEl.value = params.mod; }
     if (params.color !== undefined) colorOnEl.checked = params.color === '1';
     if (params.compact !== undefined) compactEl.checked = params.compact === '1';
     return true;
   }
 
-  function generate() {
-    var state = readState();
-    if (state.error) {
-      errorMsg.textContent = state.error;
-      return;
-    }
-    errorMsg.textContent = '';
-    var grid = computeGrid(state);
-    render(state, grid);
-    history.replaceState(null, '', stateToHash(state));
-  }
-
-  function syncModFields() {
-    modFields.setAttribute('data-disabled', modOnEl.checked ? 'false' : 'true');
-  }
-
-  modOnEl.addEventListener('change', syncModFields);
-  $('genBtn').addEventListener('click', generate);
-
-  $('copyLinkBtn').addEventListener('click', function () {
-    var state = readState();
-    if (state.error) { errorMsg.textContent = state.error; return; }
-    var url = location.origin + location.pathname + stateToHash(state);
-    copyText(url, { successMsg: 'Link copied', title: 'Link to this grid' });
-  });
-
-  $('copyTsvBtn').addEventListener('click', function () {
-    var state = readState();
-    if (state.error) { errorMsg.textContent = state.error; return; }
-    var grid = computeGrid(state);
-    var lines = [];
-    var header = ['m\\n'];
-    for (var j = 0; j <= state.w; j++) header.push(j);
-    lines.push(header.join('\t'));
-    for (var i = 0; i <= state.h; i++) {
-      var row = [i];
-      for (j = 0; j <= state.w; j++) row.push(grid[i][j].toString());
-      lines.push(row.join('\t'));
-    }
-    copyText(lines.join('\n'), { successMsg: 'Grid copied as TSV — paste into a spreadsheet', title: 'Grid as TSV' });
-  });
-
   [kEl, wEl, hEl, modEl].forEach(function (el) {
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') generate();
-    });
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
   });
 
   syncModFields();
-  if (hashToFields()) {
-    syncModFields();
-    generate();
-  } else {
-    generate();
-  }
+  syncSeedMode();
+  hashToFields();
+  generate();
 })();
 </script>
