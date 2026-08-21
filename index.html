@@ -304,6 +304,15 @@
     line-height: 1.6;
     text-align: right;
   }
+  .stage-head-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+  .view-switch { display: flex; gap: 3px; background: var(--paper-sunk); border: 1px solid var(--line); border-radius: 8px; padding: 3px; flex: none; }
+  .seg {
+    background: transparent; border: none; padding: 6px 12px; font-size: 12px; font-weight: 600;
+    color: var(--ink-soft); border-radius: 6px; cursor: pointer;
+  }
+  .seg.active { background: var(--accent); color: var(--accent-ink); }
+  .seg:hover:not(.active) { color: var(--ink); }
+  #singleView, #compareView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .toolbar {
     display: flex;
     align-items: center;
@@ -383,10 +392,41 @@
     z-index: 1;
   }
   table.dgrid td.edge { color: var(--accent); font-weight: 600; background: var(--accent-soft); }
+  table.dgrid td.match { box-shadow: inset 0 0 0 2px var(--accent2); }
   table.dgrid td span.exp { font-size: 0.78em; vertical-align: 0.5em; color: var(--ink-faint); }
   table.dgrid td:hover { outline: 1.5px solid var(--accent); outline-offset: -1.5px; }
 
   .empty-state { padding: 60px 24px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+
+  #compareScroll { display: flex; flex-direction: row; gap: 14px; align-items: stretch; }
+  .compare-card {
+    flex: 0 0 auto;
+    width: min(46vw, 620px);
+    min-width: 280px;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper-sunk);
+    overflow: hidden;
+  }
+  .compare-card-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 8px 8px 12px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  .compare-label {
+    flex: 1;
+    font-size: 11.5px;
+    padding: 6px 8px;
+    background: var(--paper-alt);
+  }
+  .compare-card .grid-scroll { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+  .compare-empty { padding: 40px 20px; text-align: center; color: var(--ink-faint); font-size: 13.5px; max-width: 42ch; margin: 0 auto; }
 
   .toast {
     position: fixed;
@@ -554,23 +594,48 @@
     <div class="stage">
       <div class="stage-head">
         <div class="stage-title" id="stageTitle">D<sup>0</sup>(m, n)</div>
-        <div class="stage-meta" id="stageMeta"></div>
+        <div class="stage-head-right">
+          <div class="view-switch">
+            <button class="seg active" id="viewGridBtn">Grid</button>
+            <button class="seg" id="viewCompareBtn">Compare <span id="pinCount">(0)</span></button>
+          </div>
+          <div class="stage-meta" id="stageMeta"></div>
+        </div>
       </div>
-      <div class="toolbar">
-        <button class="btn-ghost" id="btnApplyH" title="h(R)(m,n) = R(m,n) + R(m,n+1) — Edwards &amp; Griffiths §5">Apply h (horizontal sum)</button>
-        <button class="btn-ghost" id="btnApplyV" title="v(R)(m,n) = R(m,n) + R(m+1,n) — Edwards &amp; Griffiths §5">Apply v (vertical sum)</button>
-        <button class="btn-ghost" id="btnReset">Reset transforms</button>
-        <div class="sep"></div>
-        <button class="btn-ghost" id="btnConvolve">Convolve columns…</button>
-        <button class="btn-ghost" id="btnBlock">Inspect p×p block…</button>
-        <div class="sep"></div>
-        <button class="btn-ghost" id="btnCopyTsv">Copy as TSV</button>
-        <button class="btn-ghost" id="btnDownloadCsv">Download .csv</button>
-        <button class="btn-ghost" id="btnDownloadTxt">Download .txt</button>
+
+      <div id="singleView">
+        <div class="toolbar">
+          <button class="btn-ghost" id="btnApplyH" title="h(R)(m,n) = R(m,n) + R(m,n+1) — Edwards &amp; Griffiths §5">Apply h (horizontal sum)</button>
+          <button class="btn-ghost" id="btnApplyV" title="v(R)(m,n) = R(m,n) + R(m+1,n) — Edwards &amp; Griffiths §5">Apply v (vertical sum)</button>
+          <button class="btn-ghost" id="btnReset">Reset transforms</button>
+          <div class="sep"></div>
+          <button class="btn-ghost" id="btnPin" title="Snapshot the current grid so you can view it side by side with others">Pin current grid</button>
+          <div class="sep"></div>
+          <button class="btn-ghost" id="btnConvolve">Convolve columns…</button>
+          <button class="btn-ghost" id="btnBlock">Inspect p×p block…</button>
+          <div class="sep"></div>
+          <button class="btn-ghost" id="btnCopyTsv">Copy as TSV</button>
+          <button class="btn-ghost" id="btnDownloadCsv">Download .csv</button>
+          <button class="btn-ghost" id="btnDownloadTxt">Download .txt</button>
+        </div>
+        <div class="legend" id="legend" style="display:none;"></div>
+        <div class="grid-scroll" id="gridScroll">
+          <div class="empty-state">Set your parameters and click <strong>Generate grid</strong>.</div>
+        </div>
       </div>
-      <div class="legend" id="legend" style="display:none;"></div>
-      <div class="grid-scroll" id="gridScroll">
-        <div class="empty-state">Set your parameters and click <strong>Generate grid</strong>.</div>
+
+      <div id="compareView" style="display:none;">
+        <div class="toolbar">
+          <label class="toggle-row">
+            <input type="checkbox" id="highlightMatches" checked>
+            Highlight cells that match across all pinned grids
+          </label>
+          <div class="sep"></div>
+          <button class="btn-ghost" id="btnClearPins">Clear all pins</button>
+        </div>
+        <div class="grid-scroll" id="compareScroll">
+          <div class="compare-empty">Pin a grid from the <strong>Grid</strong> view (top right toggle) to start comparing. Pin up to 4 — matching cells at the same (m, n) get highlighted.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -614,6 +679,22 @@
 
   var current = null;   // { grid, rowCount, colCount, modOn, mod, k, seedMode, baseLabel, hCount, vCount }
   var original = null;
+  var pinned = [];      // [{ id, cur, label }]
+  var pinIdCounter = 0;
+  var viewMode = 'single';
+
+  function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function describeCurrent(cur) {
+    var tag = cur.seedMode ? 'R(m,n)' : ('D^' + cur.k + '(m,n)');
+    var t = [];
+    if (cur.hCount) t.push('h×' + cur.hCount);
+    if (cur.vCount) t.push('v×' + cur.vCount);
+    var transformStr = t.length ? ' [' + t.join(', ') + ']' : '';
+    return tag + transformStr + ' — ' + cur.rowCount + '×' + cur.colCount + (cur.modOn ? ' mod ' + cur.mod : ' exact');
+  }
 
   // ---------- number helpers ----------
   function binom(n, k) {
@@ -781,6 +862,7 @@
     var rowOffset = opts.rowOffset || 0, colOffset = opts.colOffset || 0;
     var corner = opts.corner !== undefined ? opts.corner : 'm \\ n';
     var edgeFn = opts.edgeFn;
+    var matchFn = opts.matchFn;
     var out = ['<table class="dgrid"><thead><tr><th class="corner">' + corner + '</th>'];
     for (var j = 0; j < colCount; j++) out.push('<th>' + (j + colOffset) + '</th>');
     out.push('</tr></thead><tbody>');
@@ -789,7 +871,10 @@
       for (var jj = 0; jj < colCount; jj++) {
         var val = grid[i][jj];
         var f = fmt(val, compact);
-        var cls = (edgeFn && edgeFn(i, jj)) ? ' class="edge"' : '';
+        var classes = [];
+        if (edgeFn && edgeFn(i, jj)) classes.push('edge');
+        if (matchFn && matchFn(i, jj)) classes.push('match');
+        var cls = classes.length ? ' class="' + classes.join(' ') + '"' : '';
         var style = '';
         if (modOn && colorOn) {
           var residue = Number(val);
@@ -884,6 +969,7 @@
       modOn: gp.modOn, mod: gp.mod, k: k, seedMode: seedMode, baseLabel: baseLabel, hCount: 0, vCount: 0
     };
     renderCurrent();
+    if (viewMode === 'compare') switchView('single');
 
     if (!seedMode) {
       var parts = ['k=' + k, 'w=' + gp.w, 'h=' + gp.h];
@@ -949,8 +1035,86 @@
     $('btnBlock').disabled = !current.modOn;
   }
 
-  colorOnEl.addEventListener('change', renderCurrent);
-  compactEl.addEventListener('change', renderCurrent);
+  // ---------- compare view ----------
+  var viewGridBtn = $('viewGridBtn'), viewCompareBtn = $('viewCompareBtn'), pinCountEl = $('pinCount');
+  var singleView = $('singleView'), compareView = $('compareView');
+  var compareScroll = $('compareScroll'), highlightMatchesEl = $('highlightMatches');
+
+  function updatePinCount() { pinCountEl.textContent = '(' + pinned.length + ')'; }
+
+  function switchView(mode) {
+    viewMode = mode;
+    var toCompare = mode === 'compare';
+    singleView.style.display = toCompare ? 'none' : 'flex';
+    compareView.style.display = toCompare ? 'flex' : 'none';
+    viewGridBtn.classList.toggle('active', !toCompare);
+    viewCompareBtn.classList.toggle('active', toCompare);
+    if (toCompare) renderCompare();
+  }
+  viewGridBtn.addEventListener('click', function () { switchView('single'); });
+  viewCompareBtn.addEventListener('click', function () { switchView('compare'); });
+
+  function pinCurrent() {
+    if (!current) return;
+    if (pinned.length >= 4) { showToast('Remove a pin first — up to 4 at a time'); return; }
+    pinIdCounter++;
+    pinned.push({ id: pinIdCounter, cur: current, label: describeCurrent(current) });
+    updatePinCount();
+    showToast('Pinned — ' + pinned.length + ' grid' + (pinned.length > 1 ? 's' : '') + ' ready to compare');
+  }
+  $('btnPin').addEventListener('click', pinCurrent);
+
+  function renderCompare() {
+    updatePinCount();
+    if (!pinned.length) {
+      compareScroll.innerHTML = '<div class="compare-empty">Pin a grid from the <strong>Grid</strong> view (top right toggle) to start comparing. Pin up to 4 — matching cells at the same (m, n) get highlighted.</div>';
+      return;
+    }
+    var highlightOn = highlightMatchesEl.checked && pinned.length >= 2;
+    var minRows = pinned.reduce(function (a, p) { return Math.min(a, p.cur.rowCount); }, Infinity);
+    var minCols = pinned.reduce(function (a, p) { return Math.min(a, p.cur.colCount); }, Infinity);
+    function matchFn(i, j) {
+      if (!highlightOn || i >= minRows || j >= minCols) return false;
+      var v0 = pinned[0].cur.grid[i][j].toString();
+      for (var p = 1; p < pinned.length; p++) if (pinned[p].cur.grid[i][j].toString() !== v0) return false;
+      return true;
+    }
+    var compact = compactEl.checked, colorOn = colorOnEl.checked;
+    var html = pinned.map(function (p) {
+      var tableHtml = buildTableHTML(p.cur.grid, p.cur.rowCount, p.cur.colCount, {
+        compact: compact, colorOn: colorOn, modOn: p.cur.modOn, mod: p.cur.mod,
+        edgeFn: function (i, j) { return i === 0 || j === 0; },
+        matchFn: matchFn
+      });
+      return '<div class="compare-card">' +
+        '<div class="compare-card-head">' +
+        '<input class="compare-label" data-id="' + p.id + '" value="' + escapeAttr(p.label) + '">' +
+        '<button class="btn-ghost" data-unpin="' + p.id + '" title="Remove this pin">✕</button>' +
+        '</div>' +
+        '<div class="grid-scroll">' + tableHtml + '</div>' +
+        '</div>';
+    }).join('');
+    compareScroll.innerHTML = html;
+    compareScroll.querySelectorAll('[data-unpin]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = parseInt(btn.getAttribute('data-unpin'), 10);
+        pinned = pinned.filter(function (p) { return p.id !== id; });
+        renderCompare();
+      });
+    });
+    compareScroll.querySelectorAll('.compare-label').forEach(function (inp) {
+      inp.addEventListener('change', function () {
+        var id = parseInt(inp.getAttribute('data-id'), 10);
+        var p = pinned.filter(function (pp) { return pp.id === id; })[0];
+        if (p) p.label = inp.value;
+      });
+    });
+  }
+  highlightMatchesEl.addEventListener('change', renderCompare);
+  $('btnClearPins').addEventListener('click', function () { pinned = []; renderCompare(); });
+
+  colorOnEl.addEventListener('change', function () { renderCurrent(); if (viewMode === 'compare') renderCompare(); });
+  compactEl.addEventListener('change', function () { renderCurrent(); if (viewMode === 'compare') renderCompare(); });
 
   function syncModFields() { modFields.setAttribute('data-disabled', modOnEl.checked ? 'false' : 'true'); }
   modOnEl.addEventListener('change', syncModFields);
